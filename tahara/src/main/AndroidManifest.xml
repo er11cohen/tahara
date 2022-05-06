@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.eran.tahara"
+    android:versionCode="10000"
+    android:versionName="1.0.0" >
+
+<!--    <uses-sdk-->
+<!--        android:minSdkVersion="7"-->
+<!--        android:targetSdkVersion="22" />-->
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.eran.tahara.MainActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTop" 
+            android:configChanges="orientation|screenSize"
+            android:exported="true">
+            <meta-data
+       		 android:name="android.app.searchable"
+        	 android:resource="@xml/searchable" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.SEARCH" />   
+            </intent-filter>
+        </activity>  
+        <activity
+            android:name="com.eran.tahara.WebActivity"
+            android:label="@string/title_activity_web"
+            android:launchMode="singleTop" 
+            android:configChanges="orientation|screenSize"
+            android:exported="true">
+             <meta-data
+       		 android:name="android.app.searchable"
+        	 android:resource="@xml/searchable" />
+             <intent-filter>
+               <action android:name="android.intent.action.SEARCH" />  
+            </intent-filter>
+        </activity>
+       
+       
+        <activity
+            android:name="com.eran.tahara.Gallery"
+            android:label="@string/title_activity_gallery"
+            android:configChanges="orientation|screenSize"
+            >
+        </activity>
+        <activity
+            android:name="com.eran.tahara.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:configChanges="orientation|screenSize"
+            >
+        </activity>
+    </application>
+
+</manifest>
