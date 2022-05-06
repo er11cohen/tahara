@@ -516,7 +516,6 @@ public class Utils extends Activity {
             if (notificationManager.isNotificationPolicyAccessGranted()) {
                 moveToSilentMode(activity);
             } else {
-
                 ((TextView) new AlertDialog.Builder(activity)
                         .setTitle("צדיק תן לנו הרשאה")
                         .setIcon(android.R.drawable.ic_menu_info_details)
