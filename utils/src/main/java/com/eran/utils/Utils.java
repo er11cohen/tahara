@@ -552,4 +552,13 @@ public class Utils extends Activity {
         return Html.fromHtml(html);
     }
 
+    @SuppressLint("NewApi")
+    public static File getFilePath(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            return context.getExternalFilesDir(null);
+        }
+
+        return Environment.getExternalStorageDirectory();
+    }
+
 }
