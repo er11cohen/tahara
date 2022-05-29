@@ -267,11 +267,6 @@ public class WebActivity extends Activity {
             case android.R.id.home:
                 finish();
                 break;
-            case R.id.selectStudy:
-                //openContextMenu(wv);
-                //openContextMenu(progressBar);
-                OnMenuCreated();
-                break;
             case R.id.nightMode:
                 Utils.NightMode(true, taharaPreferences, wv, nightModeItem);
                 break;
