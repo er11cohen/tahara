@@ -383,7 +383,7 @@ public class MainActivity extends Activity {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.eran.tahara"));
         startActivity(browserIntent);
 
-        String text = "צדיקים אהבתם את האפלקציה? דרגו אותנו 5 כוכבים וטלו חלק בזיכוי הרבים.";
+        String text = "צדיקים דרגו אותנו 5 כוכבים וטלו חלק בזיכוי הרבים.";
         Toast.makeText(this, text, Toast.LENGTH_LONG).show();
     }
 }
