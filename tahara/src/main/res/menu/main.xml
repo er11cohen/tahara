@@ -1,20 +1,22 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
- 
- <item android:id="@+id/menu_item_search"
-          android:title="חיפוש"
-          android:showAsAction="always"
-          android:actionViewClass="android.widget.SearchView" 
-          
-          />
- 
-     <item android:id="@+id/menu_item_share"
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_item_search"
+        android:actionViewClass="android.widget.SearchView"
         android:showAsAction="always"
-        android:title="Share"
-        android:actionProviderClass="android.widget.ShareActionProvider" />
-     
-        <item android:id="@+id/menu_item_score"
-          android:title="דרגי אותנו"
-          android:showAsAction="always"
-           android:icon="@android:drawable/btn_star_big_on" 
-          />
+        android:title="חיפוש"
+
+        />
+
+    <item
+        android:id="@+id/menu_item_share"
+        android:icon="@android:drawable/ic_menu_share"
+        android:showAsAction="ifRoom"
+        android:title="שיתוף" />
+
+    <item
+        android:id="@+id/menu_item_score"
+        android:icon="@android:drawable/btn_star_big_on"
+        android:showAsAction="always"
+        android:title="דרגי אותנו" />
 </menu>

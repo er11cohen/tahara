@@ -23,7 +23,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
-import android.widget.ShareActionProvider;
 import android.widget.Toast;
 
 import com.eran.utils.Utils;
@@ -45,7 +44,7 @@ public class MainActivity extends Activity {
     private ArrayList<Halach> alHalachFilter;
 
     String shareStr = "טהרת המשפחה באגדה ובהלכה https://play.google.com/store/apps/details?id=com.eran.tahara";
-    WeakReference<Activity> WeakReferenceActivity;
+    WeakReference<Activity> weakReferenceActivity;
 
     Boolean DrawerLayoutOpen = false;
     SearchView searchView;
@@ -141,7 +140,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        WeakReferenceActivity = new WeakReference<Activity>(this);
+        weakReferenceActivity = new WeakReference<Activity>(this);
 
 
 //		String version = sharedPreferences.getString("version","-1");
@@ -191,56 +190,46 @@ public class MainActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
 
-            MenuItem item = menu.findItem(R.id.menu_item_share);
-            ShareActionProvider myShareActionProvider = (ShareActionProvider) item.getActionProvider();
-            Intent myIntent = new Intent();
-            myIntent.setAction(Intent.ACTION_SEND);
-            myIntent.putExtra(Intent.EXTRA_TEXT, shareStr);
-            myIntent.setType("text/plain");
-            myShareActionProvider.setShareIntent(myIntent);
+        searchView = (SearchView) menu.findItem(R.id.menu_item_search).getActionView();
+        searchView.setQueryHint("חיפוש במפתח");
 
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 
-            searchView = (SearchView) menu.findItem(R.id.menu_item_search).getActionView();
-            searchView.setQueryHint("חיפוש במפתח");
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setOnQueryTextListener(new OnQueryTextListener() {
 
-            SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+            @Override
+            public boolean onQueryTextChange(String query) {
 
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-            searchView.setOnQueryTextListener(new OnQueryTextListener() {
+                // Toast.makeText(getApplicationContext(),"onQueryTextChange " +query ,Toast.LENGTH_LONG).show();
 
-                @Override
-                public boolean onQueryTextChange(String query) {
-
-                    // Toast.makeText(getApplicationContext(),"onQueryTextChange " +query ,Toast.LENGTH_LONG).show();
-
-                    int textlength = query.length();
-                    alHalachFilter.clear();
-                    for (int i = 0; i < alHalach.size(); i++) {
-                        if (textlength <= alHalach.get(i).getHalachHe().length()) {
-                            if (alHalach.get(i).getHalachHe().contains(query)) {
-                                alHalachFilter.add(alHalach.get(i));
-                            }
+                int textlength = query.length();
+                alHalachFilter.clear();
+                for (int i = 0; i < alHalach.size(); i++) {
+                    if (textlength <= alHalach.get(i).getHalachHe().length()) {
+                        if (alHalach.get(i).getHalachHe().contains(query)) {
+                            alHalachFilter.add(alHalach.get(i));
                         }
                     }
-                    lv.setAdapter(new ArrayAdapter<Halach>(MainActivity.this, android.R.layout.simple_list_item_1, alHalachFilter));
-                    // loadHistory(query);
-
-                    return true;
-
                 }
+                lv.setAdapter(new ArrayAdapter<Halach>(MainActivity.this, android.R.layout.simple_list_item_1, alHalachFilter));
+                // loadHistory(query);
 
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    // Toast.makeText(getApplicationContext(),"onQueryTextSubmit " +query ,Toast.LENGTH_LONG).show();
-                    // TODO Auto-generated method stub
-                    return false;
-                }
+                return true;
 
-            });
-        }
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // Toast.makeText(getApplicationContext(),"onQueryTextSubmit " +query ,Toast.LENGTH_LONG).show();
+                // TODO Auto-generated method stub
+                return false;
+            }
+
+        });
+
         return true;
     }
 
@@ -278,7 +267,6 @@ public class MainActivity extends Activity {
 
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (mDrawerToggle.onOptionsItemSelected(item)) {
@@ -288,6 +276,9 @@ public class MainActivity extends Activity {
         switch (item.getItemId()) {
             case R.id.menu_item_score:
                 scoreInGooglePlay();
+                break;
+            case R.id.menu_item_share:
+                Utils.shareApp(weakReferenceActivity, shareStr);
                 break;
             default:
                 break;
@@ -366,13 +357,13 @@ public class MainActivity extends Activity {
     }
 
     public void OpenHelp() {
-        Utils.alertDialogShow(WeakReferenceActivity, getApplicationContext(),
+        Utils.alertDialogShow(weakReferenceActivity, getApplicationContext(),
                 "עזרה", android.R.drawable.ic_menu_help, "files/help.txt",
                 "הבנתי", "זכו את הרבים", shareStr);
     }
 
     public void OpenAbout() {
-        Utils.alertDialogShow(WeakReferenceActivity, getApplicationContext(),
+        Utils.alertDialogShow(weakReferenceActivity, getApplicationContext(),
                 "אודות", android.R.drawable.ic_menu_info_details,
                 "files/about.txt", "אשריכם תזכו למצוות", "זכו את הרבים",
                 shareStr);
