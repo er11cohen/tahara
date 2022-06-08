@@ -1,7 +1,6 @@
 package com.eran.tahara;
 
 import android.R.drawable;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
@@ -56,27 +55,21 @@ public class MainActivity extends Activity {
     SearchView searchView;
     SharedPreferences sharedPreferences;
 
-    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         sharedPreferences = getSharedPreferences("Preferences", MODE_PRIVATE);
 
-        // /////////////////////////////////////////////////////
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-            //getActionBar().setHomeButtonEnabled(true);//no need
-            //getActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);//for 4.3 and above
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 
-            // get the parent view of home (app icon) imageview
-            ViewGroup home = (ViewGroup) findViewById(android.R.id.home).getParent();
-            // get the first child (up imageview)
-            // change the icon according to your needs
-            ((ImageView) home.getChildAt(0)).setImageResource(R.drawable.ic_drawer);
+        // get the parent view of home (app icon) imageview
+        ViewGroup home = (ViewGroup) findViewById(android.R.id.home).getParent();
+        // get the first child (up imageview)
+        // change the icon according to your needs
+        ((ImageView) home.getChildAt(0)).setImageResource(R.drawable.ic_drawer);
 
-            mActivityTitle = getTitle().toString();
-        }
+        mActivityTitle = getTitle().toString();
 
         menu = getResources().getStringArray(R.array.menu_array);
         dLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -149,28 +142,27 @@ public class MainActivity extends Activity {
         weakReferenceActivity = new WeakReference<Activity>(this);
 
 
-		String version = sharedPreferences.getString("version","-1");
-	    if (!version.equals("1.0.2"))
-	    {
-	    	 String message = Utils.ReadTxtFile("files/newVersion.txt",getApplicationContext());
-			 ((TextView) new AlertDialog.Builder(this)
-			    .setTitle("חדשות ללומדות טהרת המשפחה באגדה ובהלכה")
-			    .setIcon(android.R.drawable.ic_menu_info_details)
-			    .setIcon(drawable.ic_input_add)
-			    .setMessage(Html.fromHtml(message))
-			    .setPositiveButton("אשריכן תזכו למצוות", new DialogInterface.OnClickListener() {
-			        public void onClick(DialogInterface dialog, int which) {
-			        	dialog.cancel();
-			        }
-			     })
-			    .show()
-			    .findViewById(android.R.id.message))
-			    .setMovementMethod(LinkMovementMethod.getInstance());
+        String version = sharedPreferences.getString("version", "-1");
+        if (!version.equals("1.0.2")) {
+            String message = Utils.ReadTxtFile("files/newVersion.txt", getApplicationContext());
+            ((TextView) new AlertDialog.Builder(this)
+                    .setTitle("חדשות ללומדות טהרת המשפחה באגדה ובהלכה")
+                    .setIcon(android.R.drawable.ic_menu_info_details)
+                    .setIcon(drawable.ic_input_add)
+                    .setMessage(Html.fromHtml(message))
+                    .setPositiveButton("אשריכן תזכו למצוות", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    })
+                    .show()
+                    .findViewById(android.R.id.message))
+                    .setMovementMethod(LinkMovementMethod.getInstance());
 
-			 SharedPreferences.Editor editor = sharedPreferences.edit();
-		 	 editor.putString("version","1.0.2");
-		 	 editor.commit();
-		}
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("version", "1.0.2");
+            editor.commit();
+        }
     }
 
     private void setupDrawer() {
@@ -178,20 +170,17 @@ public class MainActivity extends Activity {
                 R.string.drawer_open, R.string.drawer_close) {
 
             /** Called when a drawer has settled in a completely open state. */
-            @SuppressLint("NewApi")
             public void onDrawerOpened(View drawerView) {
                 DrawerLayoutOpen = true;
             }
 
             /** Called when a drawer has settled in a completely closed state. */
-            @SuppressLint("NewApi")
             public void onDrawerClosed(View view) {
                 DrawerLayoutOpen = false;
             }
         };
     }
 
-    @SuppressLint("NewApi")
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -240,33 +229,25 @@ public class MainActivity extends Activity {
     }
 
     //for voice search
-    @SuppressLint("NewApi")
     @Override
     protected void onNewIntent(Intent intent) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-                String query = intent.getStringExtra(SearchManager.QUERY);
-                searchView.setQuery(query, false);
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            searchView.setQuery(query, false);
 
-                //close the keyboard
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
-                    imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
-                }
+            //close the keyboard
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
             }
         }
     }
 
-    @SuppressLint("NewApi")
     @Override
     public void onBackPressed() {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            if (!searchView.isIconified()) {
-                searchView.setIconified(true);// clear the searchView
-                searchView.onActionViewCollapsed();//close the searchView
-            } else {
-                super.onBackPressed();
-            }
+        if (!searchView.isIconified()) {
+            searchView.setIconified(true);// clear the searchView
+            searchView.onActionViewCollapsed();//close the searchView
         } else {
             super.onBackPressed();
         }
