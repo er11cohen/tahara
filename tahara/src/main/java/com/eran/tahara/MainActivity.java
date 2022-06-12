@@ -114,7 +114,8 @@ public class MainActivity extends Activity {
 
         setupDrawer();
         mDrawerToggle.setDrawerIndicatorEnabled(true);
-        dLayout.setDrawerListener(mDrawerToggle);
+        dLayout.addDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
 
         lv = (ListView) findViewById(R.id.ListViewHlach);
         alHalachFilter = new ArrayList<Halach>();
