@@ -117,19 +117,22 @@ public class MainActivity extends Activity {
         dLayout.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
 
-        lv = (ListView) findViewById(R.id.ListViewHlach);
+        lv = (ListView) findViewById(R.id.ListViewHalach);
         alHalachFilter = new ArrayList<Halach>();
         alHalach = UtilTahara.getHalachArray(getApplicationContext());
 
-        ArrayAdapter<Halach> adapter = new ArrayAdapter<Halach>(this,
-                android.R.layout.simple_list_item_1, alHalach);
-        lv.setAdapter(adapter);
-
+        CustomAdapter customAdapter = new CustomAdapter(getApplicationContext(), alHalach);
+        lv.setAdapter(customAdapter);
 
         lv.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View currView,
                                     int position, long id) {
-                Halach selected = (Halach) lv.getItemAtPosition(position);
+                Halach selected;
+                if (alHalachFilter.size() > 0) {
+                    selected = alHalachFilter.get(position);
+                } else {
+                    selected = alHalach.get(position);
+                }
 
                 Intent intent = new Intent(getApplicationContext(),
                         WebActivity.class);
@@ -210,8 +213,8 @@ public class MainActivity extends Activity {
                         }
                     }
                 }
-                lv.setAdapter(new ArrayAdapter<Halach>(MainActivity.this, android.R.layout.simple_list_item_1, alHalachFilter));
-                // loadHistory(query);
+                CustomAdapter customAdapter = new CustomAdapter(getApplicationContext(), alHalachFilter);
+                lv.setAdapter(customAdapter);
 
                 return true;
 

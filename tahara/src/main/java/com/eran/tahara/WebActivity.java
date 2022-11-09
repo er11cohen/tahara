@@ -105,17 +105,6 @@ public class WebActivity extends Activity {
         wv = (WebView) findViewById(R.id.webView);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         wvSetting = wv.getSettings();
-        //registerForContextMenu(wv);
-        //registerForContextMenu(progressBar);
-		/*wv.setOnLongClickListener(new OnLongClickListener() { 
-	        @Override
-	        public boolean onLongClick(View v) {
-	            // TODO Auto-generated method stub
-	        	OnMenuCreated();
-	            return true;
-	        }
-	    });*/
-
 
         Intent intent = getIntent();
         String requiredFileName = intent.getStringExtra("requiredFileName");
