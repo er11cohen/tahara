@@ -9,7 +9,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:padding="@dimen/activity_horizontal_margin"
+        android:paddingHorizontal="@dimen/activity_horizontal_margin"
+        android:paddingVertical="11sp"
         android:textColor="@color/black"
         android:textSize="16sp"/>
 </LinearLayout>
