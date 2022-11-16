@@ -299,14 +299,12 @@ public class Utils extends Activity {
         }
 
         if (nightMode) {
-            //wv.loadUrl("javascript:document.body.style.color='white';document.body.style.background = 'black';");
             loadJS(wv, "document.body.style.color='white';document.body.style.background = 'black';");
             if (nightModeItem != null) {
                 nightModeItem.setTitle("ביטול מצב לילה");
             }
 
         } else if (change) {
-            //wv.loadUrl("javascript:document.body.style.color='black';document.body.style.background = 'white';");
             loadJS(wv, "document.body.style.color='black';document.body.style.background = 'white';"); //for kitkat and above
             nightModeItem.setTitle("מצב לילה");
         }
