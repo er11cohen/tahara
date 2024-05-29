@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 33
-    buildToolsVersion "33.0.0"
+    compileSdk 34
+    namespace 'com.github.johnpersano.supertoasts'
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 33
+        targetSdk 34
     }
 
     buildTypes {
