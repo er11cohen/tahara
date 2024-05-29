@@ -8,15 +8,17 @@
     <string name="cancel">ביטול</string>
     <string name="title_activity_key_halchot">מפתח ההלכות</string>
 
-    
-     <string-array name="menu_array">
+
+    <string-array name="menu_array">
         <item>שחזור מיקום אחרון</item>
         <item>היסטוריה</item>
         <item>הגדרות</item>
         <item>עזרה</item>
         <item>אודות</item>
     </string-array>
-    
-     <string name="drawer_open">פתח תפריט</string>
-	<string name="drawer_close">סגור תפריט</string>
+
+    <string name="drawer_open">פתח תפריט</string>
+    <string name="drawer_close">סגור תפריט</string>
+
+    <string name="locale">he-IL</string>
 </resources>
