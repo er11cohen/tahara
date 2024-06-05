@@ -147,7 +147,7 @@ public class MainActivity extends Activity {
 
 
         String version = sharedPreferences.getString("version", "-1");
-        if (!version.equals("1.0.3")) {
+        if (!version.equals("1.0.4")) {
             String message = Utils.ReadTxtFile("files/newVersion.txt", getApplicationContext());
             ((TextView) new AlertDialog.Builder(this)
                     .setTitle("חדשות ללומדות טהרת המשפחה באגדה ובהלכה")
@@ -164,7 +164,7 @@ public class MainActivity extends Activity {
                     .setMovementMethod(LinkMovementMethod.getInstance());
 
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("version", "1.0.3");
+            editor.putString("version", "1.0.4");
             editor.commit();
         }
     }
