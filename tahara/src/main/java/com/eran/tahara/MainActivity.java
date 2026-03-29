@@ -1,6 +1,7 @@
 package com.eran.tahara;
 
 import android.R.drawable;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
@@ -9,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -29,6 +31,7 @@ import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.window.OnBackInvokedDispatcher;
 
 import com.eran.utils.Utils;
 
@@ -58,6 +61,14 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                    OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                    this::backButton
+            );
+        }
+
         setContentView(R.layout.activity_main);
         sharedPreferences = getSharedPreferences("Preferences", MODE_PRIVATE);
 
@@ -247,13 +258,20 @@ public class MainActivity extends Activity {
         }
     }
 
+    @SuppressLint("NewApi")
     @Override
     public void onBackPressed() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.BAKLAVA) {
+            backButton();
+        }
+    }
+
+    public void backButton() {
         if (!searchView.isIconified()) {
             searchView.setIconified(true);// clear the searchView
             searchView.onActionViewCollapsed();//close the searchView
         } else {
-            super.onBackPressed();
+            finish();
         }
 
     }

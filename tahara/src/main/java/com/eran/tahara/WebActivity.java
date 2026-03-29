@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -30,6 +31,7 @@ import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.SearchView.OnCloseListener;
 import android.widget.SearchView.OnQueryTextListener;
+import android.window.OnBackInvokedDispatcher;
 
 import com.eran.utils.Utils;
 import com.google.gson.Gson;
@@ -83,6 +85,14 @@ public class WebActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                    OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                    this::backButton
+            );
+        }
+
         defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         fullScreen = defaultSharedPreferences.getBoolean("CBFullScreen", false);
         setContentView(R.layout.activity_web);
@@ -452,9 +462,16 @@ public class WebActivity extends Activity {
         Utils.loadJS(wv, "window.location.hash = '';window.location.hash = '#" + hash + "';");
     }
 
+    @SuppressLint("NewApi")
     @Override
     public void onBackPressed() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.BAKLAVA) {
+            backButton();
+        }
+    }
 
+
+    private void backButton() {
         wv.clearFocus();//for close pop-up of copy, select etc.
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
@@ -464,7 +481,7 @@ public class WebActivity extends Activity {
             }
         }
 
-        super.onBackPressed();
+        finish();
     }
 
     //for voice search
