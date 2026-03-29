@@ -24,7 +24,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -414,7 +413,7 @@ public class Utils extends Activity {
 
     @TargetApi(Build.VERSION_CODES.M)
     private static boolean isPermissionRequestRequired(final Activity activity,
-                                                       @NonNull final String permission,
+                                                       final String permission,
                                                        final int requestCode,
                                                        String defaultMassege,
                                                        String settingsMassege,

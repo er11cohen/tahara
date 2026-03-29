@@ -3,20 +3,22 @@ apply plugin: 'com.android.application'
 Properties properties = new Properties()
 properties.load(project.rootProject.file("gradle.properties").newDataInputStream())
 def $sdk = properties.getProperty("sdk") as Integer
+def $minSdkVersion = properties.getProperty("minSdkVersion") as Integer
+def $javaVersion = properties.getProperty("javaVersion")
 
 android {
     namespace 'com.eran.tahara'
-    compileSdk $sdk
+    compileSdkVersion $sdk
 
     defaultConfig {
         applicationId "com.eran.tahara"
-        minSdkVersion 14
+        minSdkVersion $minSdkVersion
         targetSdk $sdk
         versionCode = 10004
         versionName = "1.0.4"
         compileOptions {
-            sourceCompatibility JavaVersion.VERSION_1_7
-            targetCompatibility JavaVersion.VERSION_1_7
+            sourceCompatibility JavaVersion.toVersion($javaVersion)
+            targetCompatibility JavaVersion.toVersion($javaVersion)
         }
     }
 

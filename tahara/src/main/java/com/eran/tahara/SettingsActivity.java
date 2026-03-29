@@ -91,6 +91,8 @@ public class SettingsActivity extends PreferenceActivity {
 		bindPreferenceSummaryToValue(findPreference("sync_frequency"));
 		*/
         bindPreferenceSummaryToValue(findPreference("phone_status"));
+
+        getListView().setFitsSystemWindows(true);
     }
 
     /**

@@ -3,7 +3,8 @@
     android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".WebActivity">
+    tools:context=".WebActivity"
+    android:fitsSystemWindows="true">
 
     <WebView
         android:id="@+id/webView"

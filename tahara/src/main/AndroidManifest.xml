@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="18" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
@@ -46,11 +43,11 @@
         <activity
             android:name="com.eran.tahara.Gallery"
             android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_gallery"></activity>
+            android:label="@string/title_activity_gallery" />
         <activity
             android:name="com.eran.tahara.SettingsActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_settings"></activity>
+            android:label="@string/title_activity_settings" />
     </application>
 
 </manifest>
