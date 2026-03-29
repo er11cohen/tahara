@@ -2,7 +2,6 @@ package com.eran.utils;
 
 import android.R.drawable;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -11,17 +10,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
-import android.location.Location;
-import android.location.LocationManager;
 import android.media.AudioManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.text.Html;
@@ -41,17 +33,10 @@ import android.widget.TextView;
 import com.github.johnpersano.supertoasts.SuperActivityToast;
 import com.github.johnpersano.supertoasts.SuperToast;
 
-import net.sourceforge.zmanim.ZmanimCalendar;
-import net.sourceforge.zmanim.util.GeoLocation;
-
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.util.List;
-import java.util.TimeZone;
 
 
 public class Utils extends Activity {
@@ -98,86 +83,6 @@ public class Utils extends Activity {
             s = s.substring(1);
         }
         return s;
-    }
-
-    public static boolean isConnected(Context myContext) {
-        ConnectivityManager cm = (ConnectivityManager) myContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo net = cm.getActiveNetworkInfo();
-        if (net != null && net.isAvailable() && net.isConnected()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public static String TimePadding(String time) {
-        if (time.length() == 1) {
-            time = "0" + time;
-        }
-        return time;
-    }
-
-    private static Location getLocation(Context myContext) {
-        LocationManager lm = (LocationManager) myContext.getSystemService(myContext.LOCATION_SERVICE);
-        Location location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        return location;
-    }
-
-    private static Location getLastKnownLocation(Context myContext) {
-        LocationManager mLocationManager = (LocationManager) myContext.getSystemService(LOCATION_SERVICE);
-        List<String> providers = mLocationManager.getProviders(true);
-        Location bestLocation = null;
-        for (String provider : providers) {
-            Location l = mLocationManager.getLastKnownLocation(provider);
-            if (l == null) {
-                continue;
-            }
-            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
-                // Found best last known location: %s", l);
-                bestLocation = l;
-            }
-        }
-        return bestLocation;
-    }
-
-    @SuppressLint("NewApi")
-    public static ZmanimCalendar getZmanimCalendar(Context myContext, String activityPreferences) {
-        //Toast.makeText(myContext,"ZmanimCalendar",Toast.LENGTH_LONG).show();
-        SharedPreferences appPreferences = myContext.getSharedPreferences(activityPreferences, myContext.MODE_PRIVATE);
-        double latitude;
-        double longitude;
-        Location location = null;
-
-        if (isMarshmallowPlusDevice()) {
-            if (PackageManager.PERMISSION_GRANTED == myContext.checkSelfPermission(Location_Permission)) {
-                location = getLastKnownLocation(myContext);//getLocation(myContext);
-            }
-        } else {
-            location = getLastKnownLocation(myContext);
-        }
-
-        if (location != null) {
-            latitude = location.getLatitude();
-            longitude = location.getLongitude();
-            //Toast.makeText(this,Double.toString(latitude)+"  " +Double.toString(longitude) ,Toast.LENGTH_LONG).show();
-
-            SharedPreferences.Editor editor = appPreferences.edit();
-            editor.putString("latitude", String.valueOf(latitude));
-            editor.putString("longitude", String.valueOf(longitude));
-            editor.commit();
-        } else {
-            latitude = Double.parseDouble(appPreferences.getString("latitude", "31.7963186"));
-            longitude = Double.parseDouble(appPreferences.getString("longitude", "35.175359"));
-            //LAT LONG OF JERUSALEM
-            // latitude = 31.7963186;
-            // longitude = 35.175359;
-        }
-
-        TimeZone timeZone = TimeZone.getDefault();
-        GeoLocation geoLocation = new GeoLocation("", latitude, longitude, 0, timeZone);
-        ZmanimCalendar zc = new ZmanimCalendar(geoLocation);
-
-        return zc;
     }
 
     public static void alertDialogShow(final WeakReference<Activity> aReference, Context context, String title, int iconNumber, String textDialogUri,
@@ -269,7 +174,7 @@ public class Utils extends Activity {
     private static void writeSize(int size, SharedPreferences references) {
         SharedPreferences.Editor editor = references.edit();
         editor.putInt("size", size);
-        editor.commit();
+        editor.apply();
     }
 
     public static void changeSize(boolean increase, SharedPreferences references, WebSettings wvSetting) {
@@ -310,37 +215,8 @@ public class Utils extends Activity {
 
     }
 
-    //need permission
-    // <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    public static void appendLog(String text, String fileName) {
-        File logFile = new File(Environment.getExternalStorageDirectory() + "/" + fileName);
-        if (!logFile.exists()) {
-            try {
-                logFile.createNewFile();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-        try {
-            //BufferedWriter for performance, true to set append to file flag
-            BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
-            buf.append("\n" + "new Log \n" + text);
-            buf.newLine();
-            buf.close();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    @SuppressLint("NewApi")
     public static void loadJS(WebView wv, String jsStr) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-            wv.evaluateJavascript(jsStr, null);
-        } else {
-            wv.loadUrl("javascript:" + jsStr);
-        }
+        wv.evaluateJavascript(jsStr, null);
     }
 
     public static void firstDoubleClickInfo(SharedPreferences references, final WeakReference<Activity> aReference) {
@@ -350,7 +226,7 @@ public class Utils extends Activity {
             return;
         }
 
-        Boolean firstDoubleClickInfo = references.getBoolean("firstDoubleClickInfo", true);
+        boolean firstDoubleClickInfo = references.getBoolean("firstDoubleClickInfo", true);
         if (firstDoubleClickInfo) {
             SuperActivityToast superActivityToast = new SuperActivityToast(activity);
             superActivityToast.setText("כדי להיכנס ולצאת ממסך מלא ניתן להקליק הקלקה כפולה");
@@ -368,7 +244,7 @@ public class Utils extends Activity {
 
             SharedPreferences.Editor editor = references.edit();
             editor.putBoolean("firstDoubleClickInfo", false);
-            editor.commit();
+            editor.apply();
         }
     }
 
@@ -391,99 +267,11 @@ public class Utils extends Activity {
         loadJS(wv, opacityStyle);
     }
 
-
-    @SuppressLint("NewApi")
-    public static void firstTimeAskedPermission(Activity activity, String permission) {
-        SharedPreferences defaultSharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(activity.getBaseContext());
-
-        defaultSharedPreferences.edit().putBoolean(permission, false).apply();
-    }
-
     public static boolean isFirstTimeAskingPermission(Activity activity, String permission) {
         SharedPreferences defaultSharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(activity.getBaseContext());
         return defaultSharedPreferences.getBoolean(permission, true);
     }
-
-
-    public static boolean isMarshmallowPlusDevice() {
-        return Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1;
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    private static boolean isPermissionRequestRequired(final Activity activity,
-                                                       final String permission,
-                                                       final int requestCode,
-                                                       String defaultMassege,
-                                                       String settingsMassege,
-                                                       boolean showDialog) {
-        if (PackageManager.PERMISSION_GRANTED != activity.checkSelfPermission(permission)) {
-            if (!showDialog) {
-                return true;
-            }
-            final boolean isFirstTimeAskingPermission = isFirstTimeAskingPermission(activity, permission);
-
-            String message = defaultMassege;
-            String buttonText = "מסכים ברור";
-            final boolean showRationale = activity.shouldShowRequestPermissionRationale(permission);
-            if (!showRationale && !isFirstTimeAskingPermission) //user checked "never ask again"
-            {
-                message = settingsMassege;
-                buttonText = "הגדרות";
-            }
-
-            ((TextView) new AlertDialog.Builder(activity)
-                    .setTitle("צדיק תן לנו הרשאה")
-                    .setIcon(android.R.drawable.ic_menu_info_details)
-                    .setIcon(drawable.ic_input_add)
-                    .setMessage(message)
-                    .setPositiveButton(buttonText, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                            if (showRationale || isFirstTimeAskingPermission) {
-                                activity.requestPermissions(new String[]{permission}, requestCode);
-                            } else {
-                                Intent intent = new Intent();
-                                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
-                                intent.setData(uri);
-                                activity.startActivity(intent);
-                            }
-                        }
-                    })
-                    .setCancelable(false)
-                    .show()
-                    .findViewById(android.R.id.message))
-                    .setMovementMethod(LinkMovementMethod.getInstance());
-
-            return true;
-        }
-
-        return false;
-    }
-
-    @SuppressLint("NewApi")
-    public static boolean isPermissionWriteRequired(Activity activity, int requestCode, boolean showDialog) {
-        if (isMarshmallowPlusDevice()) {
-            String permission = "android.permission.WRITE_EXTERNAL_STORAGE";
-            String message = "צדיק, על מנת שתוכל לשחזר תמיד את היסטוריית המיקומים שלך, עליך לאשר את 'הרשאת הגישה לקבצים'";
-            String settingsMassege = "צדיק, על מנת שתוכל לשחזר תמיד את היסטוריית המיקומים שלך, עליך ללחוץ על הגדרות > הרשאות ולהדליק את ההרשאות";
-            return isPermissionRequestRequired(activity, permission, requestCode, message, settingsMassege, showDialog);
-        }
-        return false;
-    }
-
-    @SuppressLint("NewApi")
-    public static boolean isPermissionLocationRequired(Activity activity, int requestCode, boolean showDialog) {
-        if (isMarshmallowPlusDevice()) {
-            String message = "צדיק, על מנת שנוכל לחשב את הלימוד היומי, עליך לאשר את 'הרשאת מיקום'  (חישוב הלימוד היומי תלוי במיקום שלך)";
-            String settingsMassege = "צדיק, על מנת שנוכל לחשב את הלימוד היומי, עליך ללחוץ על הגדרות > הרשאות ולהדליק את ההרשאות (חישוב הלימוד היומי תלוי במיקום שלך)";
-            return isPermissionRequestRequired(activity, Location_Permission, requestCode, message, settingsMassege, showDialog);
-        }
-        return false;
-    }
-
 
     public static void setRingerMode(Activity activity, int phoneStatus, int startRingerMode) {
         if (phoneStatus != -1 && startRingerMode != 0/*silent*/) {
@@ -496,34 +284,29 @@ public class Utils extends Activity {
         }
     }
 
-    @SuppressLint("NewApi")
     private static void requestForDoNotDisturbPermissionOrSetDoNotDisturb(final Activity activity) {
-        if (Build.VERSION.SDK_INT < 23) {
+        NotificationManager notificationManager = (NotificationManager) activity.getBaseContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notificationManager.isNotificationPolicyAccessGranted()) {
             moveToSilentMode(activity);
-        } else if (Build.VERSION.SDK_INT >= 23) {
-            NotificationManager notificationManager = (NotificationManager) activity.getBaseContext().getSystemService(Context.NOTIFICATION_SERVICE);
-            if (notificationManager.isNotificationPolicyAccessGranted()) {
-                moveToSilentMode(activity);
-            } else {
-                ((TextView) new AlertDialog.Builder(activity)
-                        .setTitle("צדיק תן לנו הרשאה")
-                        .setIcon(android.R.drawable.ic_menu_info_details)
-                        .setIcon(drawable.ic_input_add)
-                        .setMessage("צדיק ביקשת לעבור למצב שקט בעת הלימוד, אנא תן לנו הרשאה על מנת שנוכל לשנות זאת")
-                        .setPositiveButton("מסכים ברור", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                                // Open Setting screen to ask for permission
-                                Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
-                                activity.startActivity(intent);
-                            }
-                        })
-                        .setNegativeButton("לא כעת", null)
-                        .setCancelable(false)
-                        .show()
-                        .findViewById(android.R.id.message))
-                        .setMovementMethod(LinkMovementMethod.getInstance());
-            }
+        } else {
+            ((TextView) new AlertDialog.Builder(activity)
+                    .setTitle("צדיק תן לנו הרשאה")
+                    .setIcon(drawable.ic_menu_info_details)
+                    .setIcon(drawable.ic_input_add)
+                    .setMessage("צדיק ביקשת לעבור למצב שקט בעת הלימוד, אנא תן לנו הרשאה על מנת שנוכל לשנות זאת")
+                    .setPositiveButton("מסכים ברור", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                            // Open Setting screen to ask for permission
+                            Intent intent = new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+                            activity.startActivity(intent);
+                        }
+                    })
+                    .setNegativeButton("לא כעת", null)
+                    .setCancelable(false)
+                    .show()
+                    .findViewById(android.R.id.message))
+                    .setMovementMethod(LinkMovementMethod.getInstance());
         }
     }
 
@@ -543,11 +326,7 @@ public class Utils extends Activity {
 
     @SuppressLint("NewApi")
     public static File getFilePath(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            return context.getExternalFilesDir(null);
-        }
-
-        return Environment.getExternalStorageDirectory();
+        return context.getExternalFilesDir(null);
     }
 
     public static void shareApp(final WeakReference<Activity> aReference, String shareTextIntent) {

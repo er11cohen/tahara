@@ -183,58 +183,55 @@ public class WebActivity extends Activity {
         paragraphMI = menu.findItem(R.id.select_paragraph);
 
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+        //Toast.makeText(getApplicationContext(),"onQueryTextChange "  ,Toast.LENGTH_LONG).show();
+        menu.findItem(R.id.select_paragraph).setVisible(true);
 
-            //Toast.makeText(getApplicationContext(),"onQueryTextChange "  ,Toast.LENGTH_LONG).show();
-            menu.findItem(R.id.select_paragraph).setVisible(true);
+        MenuItem searchItem = menu.findItem(R.id.menu_item_search);
+        searchItem.setVisible(true);///////////////////////////
+        searchView = (SearchView) searchItem.getActionView();
+        searchView.setQueryHint("חיפוש בפרק הנוכחי");
 
-            MenuItem searchItem = menu.findItem(R.id.menu_item_search);
-            searchItem.setVisible(true);///////////////////////////
-            searchView = (SearchView) searchItem.getActionView();
-            searchView.setQueryHint("חיפוש בפרק הנוכחי");
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 
-            SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setOnQueryTextListener(new OnQueryTextListener() {
 
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-            searchView.setOnQueryTextListener(new OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String query) {
+                //Toast.makeText(getApplicationContext(),"onQueryTextChange " +query ,Toast.LENGTH_LONG).show();
 
-                @Override
-                public boolean onQueryTextChange(String query) {
-                    //Toast.makeText(getApplicationContext(),"onQueryTextChange " +query ,Toast.LENGTH_LONG).show();
+                return true;
+            }
 
-                    return true;
-                }
-
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    currentQuery = query;
-                    noResultCount = 0;
-                    scrollY = wv.getScrollY();//save the location before the search
-                    find(currentQuery, Search.NEXT_SEARCH);
-                    // TODO Auto-generated method stub
-                    return true;
-                }
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                currentQuery = query;
+                noResultCount = 0;
+                scrollY = wv.getScrollY();//save the location before the search
+                find(currentQuery, Search.NEXT_SEARCH);
+                // TODO Auto-generated method stub
+                return true;
+            }
 
 
-            });
+        });
 
-            searchView.setOnCloseListener(new OnCloseListener() {
-                @Override
-                public boolean onClose() {
-                    closeSearch(true);
-                    return false;
-                }
+        searchView.setOnCloseListener(new OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                closeSearch(true);
+                return false;
+            }
 
-            });
+        });
 
-            searchView.setOnSearchClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View arg0) {
-                    // TODO Auto-generated method stub
-                    paragraphMI.setVisible(false);
-                }
-            });
-        }
+        searchView.setOnSearchClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                // TODO Auto-generated method stub
+                paragraphMI.setVisible(false);
+            }
+        });
 
 
         return true;
@@ -474,11 +471,9 @@ public class WebActivity extends Activity {
     private void backButton() {
         wv.clearFocus();//for close pop-up of copy, select etc.
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            if (!searchView.isIconified()) {
-                closeSearch(false);
-                return;
-            }
+        if (!searchView.isIconified()) {
+            closeSearch(false);
+            return;
         }
 
         finish();
@@ -488,16 +483,14 @@ public class WebActivity extends Activity {
     @SuppressLint("NewApi")
     @Override
     protected void onNewIntent(Intent intent) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-                String query = intent.getStringExtra(SearchManager.QUERY);
-                searchView.setQuery(query, true);
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            searchView.setQuery(query, true);
 
-                //close the keyboard
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
-                    imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
-                }
+            //close the keyboard
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
             }
         }
     }
