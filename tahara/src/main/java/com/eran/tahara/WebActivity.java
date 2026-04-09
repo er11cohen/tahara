@@ -16,6 +16,7 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.view.GestureDetector;
 import android.view.Menu;
@@ -312,23 +313,12 @@ public class WebActivity extends Activity {
                         Utils.setOpacity(wv, 0.1);
                         Utils.showWebView(wv, progressBar, true);
                     }
-                    new Handler().postDelayed(new Runnable() {
-                        public void run() {
-                            ChangeWebViewBySettings();
-                            if (scrollY != 0) {
-                                isFirstOnPageFinished = false;
-                                wv.scrollTo(0, scrollY);
-                            } else if (isFirstOnPageFinished) {
-                                isFirstOnPageFinished = false;
-
-                                //wv.loadUrl("javascript:window.location.hash = '';window.location.hash = '#" + href + "';");
-                                Utils.loadJS(wv, "window.location.hash = '';window.location.hash = '#" + href + "';");
-                            }
-
-                            pageReady = true;
-                            Utils.setOpacity(wv, 1);
+                    wv.postVisualStateCallback(12345, new WebView.VisualStateCallback() {
+                        @Override
+                        public void onComplete(long requestId) {
+                            waitForCompleteLayout(view, WebActivity.this::webViewIsReady);
                         }
-                    }, 1100);
+                    });
                 } else//fromSearch
                 {
                     ChangeWebViewBySettings();
@@ -337,8 +327,44 @@ public class WebActivity extends Activity {
                 }
             }
         });
+    }
 
+    private void waitForCompleteLayout(WebView wv, Runnable callback) {
+        // Check if dimensions are stable
+        final int[] previousHeight = {wv.getContentHeight()};
 
+        Handler handler = new Handler(Looper.getMainLooper());
+        Runnable checkStability = new Runnable() {
+
+            @Override
+            public void run() {
+                int currentHeight = wv.getContentHeight();
+
+                if (currentHeight == previousHeight[0] && currentHeight > 0) {
+                    // Height is stable, likely ready
+                    handler.postDelayed(callback, 50);
+                } else {
+                    previousHeight[0] = currentHeight;
+                    handler.postDelayed(this, 50);
+                }
+            }
+        };
+
+        handler.postDelayed(checkStability, 50);
+    }
+
+    private void webViewIsReady() {
+        ChangeWebViewBySettings();
+        if (scrollY != 0) {
+            isFirstOnPageFinished = false;
+            wv.scrollTo(0, scrollY);
+        } else if (isFirstOnPageFinished) {
+            isFirstOnPageFinished = false;
+            Utils.loadJS(wv, "window.location.hash = '';window.location.hash = '#" + href + "';");
+        }
+
+        pageReady = true;
+        Utils.setOpacity(wv, 1);
     }
 
     private void ChangeWebViewBySettings() {
